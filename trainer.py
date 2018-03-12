@@ -2,6 +2,9 @@ import importlib.machinery
 
 import os
 
+import utils
+from data import Data
+
 
 class Trainer:
     def __init__(self, file):
@@ -16,7 +19,10 @@ class Trainer:
 
     def run(self):
         if self.config.preprocess:
-            print('preprocess')
+            dataset = self.model.get_data()
+            train, valid, test = utils.split_dataset(dataset, self.config.train_valid_test_ratio)
+            for set, set_type in zip([train, valid, test], [Data.TRAIN, Data.VALID, Data.TEST]):
+                utils.create_tfrecord(self.config.dataset, set, set_type, self.config.dataset_path)
 
         if self.config.train or self.config.retrain:
             self.model.train()

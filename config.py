@@ -25,3 +25,7 @@ class BaseConfig:
     @param
     def retrain(self):
         return False
+
+    @param(abstract=True)
+    def train_valid_test_ratio(self):
+        pass

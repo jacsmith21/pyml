@@ -12,3 +12,4 @@
 .idea/**/uiDesigner.xml
 
 __pycache__/
+venv/

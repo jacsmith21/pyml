@@ -20,19 +20,9 @@ class Trainer:
 
         if self.config.train or self.config.retrain:
             self.model.train()
-            self.model.freeze_graph()
 
         if self.config.evaluate:
-            self.model.evaluate(evaluate_on_validation=self.config.evaluate_on_validation)
-
-        if self.config.predict:
-            self.model.predict()
-
-        if self.config.predict_chov:
-            self.model.predict_chov(file_path=self.config.chov_file_path)
-
-        if self.config.cloud_backup:
-            self.model.cloud_backup()
+            self.model.evaluate()
 
         if self.config.freeze_graph:
             self.model.freeze_graph()

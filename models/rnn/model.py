@@ -2,7 +2,13 @@ from model import BaseModel
 
 
 class RNN(BaseModel):
-    def build(self, inputs):
+    def loss(self, inputs, outputs):
+        pass
+
+    def optimize(self, loss):
+        pass
+
+    def build(self, inputs, mode):
         pass
 
     def train(self):

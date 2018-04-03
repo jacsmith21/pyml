@@ -21,18 +21,20 @@ def iou(x, centroids):
     return np.array(ious)
 
 
-def avg_iou(annotation_dims, centroids):
+def avg_iou(annotations, centroids):
     """
 
-    :param annotation_dims:
+    :param annotations:
     :param centroids:
     :return:
     """
+    annotations = np.array(annotations)
+
     total = 0
-    for annotation in annotation_dims:
+    for annotation in annotations:
         # note IOU() will return array which contains IoU for each centroid and X[i] // slightly ineffective,
         # but I am too lazy
         total += max(iou(annotation, centroids))
 
-    n_annotations, _ = annotation_dims.shape
+    n_annotations, _ = annotations.shape
     return total / n_annotations

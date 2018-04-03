@@ -2,7 +2,7 @@ import random
 
 import numpy as np
 
-import utils
+from pyml import utils
 
 
 def _k_means(annotation_dims, centroids):

@@ -1,7 +1,7 @@
 import unittest
 
-from pyml import utils
-from pyml.yolo import generate_anchors
+from tensortools import utils
+from tensortools.yolo import generate_anchors
 
 
 class TestYolo(unittest.TestCase):

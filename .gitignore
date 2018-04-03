@@ -14,4 +14,4 @@
 __pycache__/
 venv/
 dist/
-tensortools.egg.info
+tensortools.egg-info

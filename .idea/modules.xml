@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/pyml.iml" filepath="$PROJECT_DIR$/.idea/pyml.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/tensortools.iml" filepath="$PROJECT_DIR$/.idea/tensortools.iml" />
     </modules>
   </component>
 </project>

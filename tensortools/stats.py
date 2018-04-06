@@ -1,23 +1,28 @@
-from tensortools import utils
+import numpy as np
 
-def k_means(annotation_dims, centroids):
-    num_annotations = annotation_dims.shape[0]
+
+def k_means(annotations, centroids, distance_ob):
+    """
+
+    :param annotations:
+    :param centroids:
+    :param distance_ob:
+    :return:
+    """
     prev_assignments = None
 
     count = 0
     while True:
         distances = []
-        for i in range(num_annotations):
-            distance = 1 - utils.iou(annotation_dims[i], centroids)
-            distances.append(distance)
-
-        # TODO: Check if this is even the correct summary to give!
-        print("iter {}: mean = {}".format(count, np.mean(distances)))
+        for annotation in annotations:
+            distances.append([distance_ob.calculate(annotation, centroid) for centroid in centroids])
 
         # assign samples to centroids
         # distances have a shape of (n_annotations, k)
         # assign the annotations to the closest cluster
         new_assignments = np.argmin(distances, axis=1)
+
+        print("iter {}: mean = {}".format(count, np.mean(np.min(distances, axis=-1))))
 
         if (new_assignments == prev_assignments).all():
             print('Centroids have not changed since the last iteration. Finished searching!')
@@ -26,11 +31,11 @@ def k_means(annotation_dims, centroids):
 
         # calculate new centroids
         centroid_annotations = [list() for _ in range(len(centroids))]
-        for cluster, annotation in zip(new_assignments, annotation_dims):
+        for cluster, annotation in zip(new_assignments, annotations):
             centroid_annotations[cluster].append(annotation)
 
-        for i, annotations in enumerate(centroid_annotations):
-            centroids[i] = np.mean(annotations, axis=0)
+        for i, centroid_annotation in enumerate(centroid_annotations):
+            centroids[i] = np.mean(centroid_annotation, axis=0)
 
-        prev_assignments = np.copy(new_assignments)
+        prev_assignments = new_assignments
         count += 1

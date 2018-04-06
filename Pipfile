@@ -9,5 +9,8 @@ python_version = "3.5"
 [packages]
 tensorflow = "*"
 numpy = "*"
+scipy = "*"
+requests = "*"
+scikit-image = "*"
 
 [dev-packages]

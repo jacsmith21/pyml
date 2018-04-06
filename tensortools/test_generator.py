@@ -1,6 +1,6 @@
 import unittest
 
-from common.generator import Generator
+from tensortools.generator import Generator
 
 
 class TestGenerator(unittest.TestCase):

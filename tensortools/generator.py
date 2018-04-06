@@ -1,10 +1,9 @@
+import logging
+
 import numpy as np
 import skimage.draw
 
-from common.decorators import abstract
-from common.utils import get_logger
-
-logger = get_logger(__name__)
+from tensortools.abc import abstract
 
 
 class Generator:
@@ -86,7 +85,31 @@ class Generator:
 
             return mask, ('triangle', (r - triangle_height, c, r, c + side))
 
-    def generate(self, n_images, height, width, max_shapes, min_shapes=1, min_size=2, max_size=None, shape=None, allow_overlap=False):
+    def generate(self,
+                 n_images,
+                 height,
+                 width,
+                 max_shapes,
+                 min_shapes=1,
+                 min_size=2,
+                 max_size=None,
+                 shape=None,
+                 allow_overlap=False):
+        """
+        Generates a fake object detection dataset of squares, triangles & circles!
+
+        :param n_images: The amount images to generate.
+        :param height: The height of the desired images.
+        :param width: The width of the desired images.
+        :param max_shapes: The max amount of shapes per image.
+        :param min_shapes: The min amount of shapes per image.
+        :param min_size: The min size of the shapes.
+        :param max_size: The max size of the shapes.
+        :param shape: The type of shape. If None, a shape is randomly chosen each time.
+        :param allow_overlap: Whether or not to allow overlap.
+        :return:
+            images: The generates images, shape [n_images, height, width, 3].
+        """
         max_size = max_size or max(height, width)
 
         images = []
@@ -95,7 +118,8 @@ class Generator:
             n_shapes = np.random.randint(min_shapes, max_shapes + 1)
 
             for _ in range(n_shapes):
-                image, image_labels = self._generate_image(n_shapes, height, width, min_size, max_size, shape, allow_overlap)
+                image, image_labels = self._generate_image(
+                    n_shapes, height, width, min_size, max_size, shape, allow_overlap)
                 images.append(image)
                 labels.append(image_labels)
 
@@ -113,7 +137,7 @@ class Generator:
             mask, label = shape_generator.generate(height, width, min_size, max_size)
 
             if not allow_overlap and (image[mask.nonzero()] < 255).any():
-                logger.info('Overlap detected. Skipping shape.')
+                logging.info('Overlap detected. Skipping shape.')
                 continue
 
             image += mask

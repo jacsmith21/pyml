@@ -5,24 +5,20 @@ import numpy as np
 import requests
 
 
-def iou(x, centroids):
-    ious = []
-    for centroid in centroids:
-        c_w, c_h = centroid
-        w, h = x
+def iou(box_a, box_b):
+    c_w, c_h = box_b
+    w, h = box_a
 
-        if c_w >= w and c_h >= h:
-            intersection, union = w * h, c_w * c_h
-        elif c_w >= w and c_h <= h:
-            intersection, union = w * c_h, w * h + (c_w-w) * c_h
-        elif c_w <= w and c_h >= h:
-            intersection, union = c_w * h, w * h + c_w * (c_h-h)
-        else:
-            intersection, union = c_w * c_h, w * h
+    if c_w >= w and c_h >= h:
+        intersection, union = w * h, c_w * c_h
+    elif c_w >= w and c_h <= h:
+        intersection, union = w * c_h, w * h + (c_w-w) * c_h
+    elif c_w <= w and c_h >= h:
+        intersection, union = c_w * h, w * h + c_w * (c_h-h)
+    else:
+        intersection, union = c_w * c_h, w * h
 
-        ious.append(intersection / union)
-
-    return np.array(ious)
+    return intersection / union
 
 
 def avg_iou(annotations, centroids):
@@ -38,13 +34,18 @@ def avg_iou(annotations, centroids):
     for annotation in annotations:
         # note IOU() will return array which contains IoU for each centroid and X[i] // slightly ineffective,
         # but I am too lazy
-        total += max(iou(annotation, centroids))
+        total += max([iou(annotation, centroid) for centroid in centroids])
 
     n_annotations, _ = annotations.shape
     return total / n_annotations
 
 
 def download_file(url, dst):
+    """
+
+    :param url:
+    :param dst:
+    """
     if os.path.isfile(dst):
         return
 

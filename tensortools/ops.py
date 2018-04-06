@@ -20,3 +20,4 @@ def flatten(tensor, has_batch=False):
         new_tensor = tf.reshape(tensor, [-1])
 
     return new_tensor
+

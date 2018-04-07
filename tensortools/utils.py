@@ -4,6 +4,10 @@ import sys
 import numpy as np
 import requests
 
+from tensortools import logging
+
+logger = logging.get_logger(__name__)
+
 
 def iou(box_a, box_b):
     c_w, c_h = box_b
@@ -40,6 +44,20 @@ def avg_iou(annotations, centroids):
     return total / n_annotations
 
 
+def count(arr, value):
+    total = 0
+    for element in arr:
+        try:
+            iter(element)
+            total += count(element, value)
+        except TypeError:
+            pass
+
+        total += 1 if element == value else 0
+
+    return total
+
+
 def download_file(url, dst):
     """
 
@@ -50,7 +68,7 @@ def download_file(url, dst):
         return
 
     with open(dst, "wb") as f:
-        print("Downloading %s to %s" % (url, dst))
+        logger.info("Downloading %s to %s" % (url, dst))
         response = requests.get(url, stream=True)
         total_length = response.headers.get('content-length')
 

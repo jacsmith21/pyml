@@ -1,5 +1,9 @@
 import numpy as np
 
+from tensortools import logging
+
+logger = logging.get_logger(__name__)
+
 
 def k_means(annotations, centroids, distance_ob):
     """
@@ -22,11 +26,11 @@ def k_means(annotations, centroids, distance_ob):
         # assign the annotations to the closest cluster
         new_assignments = np.argmin(distances, axis=1)
 
-        print("iter {}: mean = {}".format(count, np.mean(np.min(distances, axis=-1))))
+        logger.info("iter {}: mean = {}".format(count, np.mean(np.min(distances, axis=-1))))
 
         if (new_assignments == prev_assignments).all():
-            print('Centroids have not changed since the last iteration. Finished searching!')
-            print("Centroids = ", centroids)
+            logger.info('Centroids have not changed since the last iteration. Finished searching!')
+            logger.info("Centroids = ", centroids)
             return centroids
 
         # calculate new centroids

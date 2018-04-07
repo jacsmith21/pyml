@@ -2,59 +2,48 @@ import numpy as np
 
 from tensortools import stats, logging
 from tensortools import utils
-from tensortools.yolo import YoloDistance
 
 logger = logging.get_logger(__name__)
 
 
-class SSDDistance:
-    def __init__(self, fm_sizes):
-        self.fm_sizes = np.array(fm_sizes)
-
-    def calculate(self, annotation, centroid):
-        ious = []
-        for fm in self.fm_sizes:
-            anchor_norm = annotation / fm
-            ious.append(utils.iou(anchor_norm, centroid))
-        return 1 - np.mean(ious)
-
-
-def generate_anchors(annotations, fm_sizes, num_clusters):
+def generate_anchors(annotations, fm_sizes, n_clusters):
     """
-    Generate anchors for an SSD model.
+    Generate anchors for an SSD model using KMeans.
 
-    :param annotations: The annotations, shape [n_samples, 4]. Each annotation should be in the following form:
-    [r1, c1, r2, c2] where the first point is the ULC and the second point is the LRC. Each value should be in the range
-    [0, 1]
-    :param fm_sizes:
-    :param num_clusters: The number of clusters (aka the number of desired bounding boxes).
-    :return: The anchors boxes, shape [num_clusters, 2].
+    :param annotations: The annotations, shape `[n_samples, 4]`. Each annotation should be in the following form:
+    `[r1, c1, r2, c2]` where the first point is the ULC and the second point is the LRC. Each value should be in the range
+    `[0, 1]`
+    :param fm_sizes: The feature map sizes, shape `[n_fm, 2]`.
+    :param n_clusters: The number of clusters (aka the number of desired bounding boxes for each feature map).
+    :return: The anchors boxes, shape `[n_fm, n_clusters, 2]`. Each value is in its normalized form in the range of
+    [0, 1].
     """
     annotations = np.array(annotations)
     if annotations.min() < 0 or annotations.max() > 1:
         raise ValueError('\'annotations\' should be between 0 and 1')
 
     fm_sizes = np.array(fm_sizes)
-    anchors = [np.array([1, 1]) / fm for fm in fm_sizes]
+    cell_sizes = 1 / fm_sizes
 
     ious = [[] for _ in range(len(annotations))]
     for annotation_ious, annotation in zip(ious, annotations):
-        for anchor in anchors:
-            iou = utils.iou(anchor, annotation)
+        for cell in cell_sizes:
+            iou = utils.iou(cell, annotation)
             annotation_ious.append(iou)
 
     closest = np.argmax(ious, axis=1)
-    logger.info(utils.count(closest, 0))
-    logger.info(utils.count(closest, 1))
+    for i, fm in enumerate(fm_sizes):
+        count = utils.count(closest, i)
+        logger.info('{} has {} that are the closets'.format(fm, count))
+        if count == 0:
+            raise Exception('feature map {} has no matching annotations'.format(fm))
 
     anchors = []
     for i, fm in enumerate(fm_sizes):
-        logger.info(fm)
         fm_annotations = annotations[closest == i]
-        logger.info('average: {}'.format(np.mean(fm_annotations, axis=0)))
-        indices = np.random.choice(range(len(fm_annotations)), num_clusters, replace=False)
-        initial_centroids = fm_annotations[indices]
-        fm_anchors = stats.k_means(fm_annotations, initial_centroids, YoloDistance())
+        logger.info('Average default box size, IOU for feature map {}: {}, {}'.format(
+            fm, np.mean(fm_annotations, axis=0), utils.avg_iou(fm_annotations, [1 / fm])))
+        fm_anchors = stats.k_means(fm_annotations, n_clusters)
         anchors.append(fm_anchors)
 
     return anchors

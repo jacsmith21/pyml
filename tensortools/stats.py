@@ -1,25 +1,31 @@
 import numpy as np
 
 from tensortools import logging
+from tensortools import utils
 
 logger = logging.get_logger(__name__)
 
 
-def k_means(annotations, centroids, distance_ob):
+def distance(annotation, centroid):
+    return 1 - utils.iou(annotation, centroid)
+
+
+def k_means(annotations, n_clusters):
     """
 
     :param annotations:
-    :param centroids:
-    :param distance_ob:
+    :param n_clusters:
     :return:
     """
     prev_assignments = None
+    indices = np.random.choice(range(len(annotations)), n_clusters, replace=False)
+    centroids = annotations[indices]
 
     count = 0
     while True:
         distances = []
         for annotation in annotations:
-            distances.append([distance_ob.calculate(annotation, centroid) for centroid in centroids])
+            distances.append([distance(annotation, centroid) for centroid in centroids])
 
         # assign samples to centroids
         # distances have a shape of (n_annotations, k)
@@ -30,7 +36,7 @@ def k_means(annotations, centroids, distance_ob):
 
         if (new_assignments == prev_assignments).all():
             logger.info('Centroids have not changed since the last iteration. Finished searching!')
-            logger.info("Centroids = ", centroids)
+            logger.info("Centroids = {}".format(centroids))
             return centroids
 
         # calculate new centroids

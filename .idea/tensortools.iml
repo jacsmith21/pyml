@@ -5,10 +5,14 @@
     <orderEntry type="jdk" jdkName="Python 3.5 (tensortools-EpSUtPTG)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
-  <component name="PyDocumentationSettings">
-    <option name="renderExternalDocumentation" value="true" />
+  <component name="PackageRequirementsSettings">
+    <option name="requirementsPath" value="" />
+  </component>
+  <component name="ReSTService">
+    <option name="TXT_IS_RST" value="true" />
   </component>
   <component name="TestRunnerService">
-    <option name="PROJECT_TEST_RUNNER" value="Unittests" />
+    <option name="projectConfiguration" value="py.test" />
+    <option name="PROJECT_TEST_RUNNER" value="py.test" />
   </component>
 </module>

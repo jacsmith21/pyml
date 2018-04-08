@@ -47,13 +47,11 @@ class GlobalStepIncrementor(IntervalHook):
         self.step_incrementor = None
 
     def begin(self):
-        global_step = tf.train.get_or_create_global_step()
-        self.step_incrementor = tf.assign_add(global_step, 1)
+        super().begin()
+        self.step_incrementor = tf.assign_add(self.global_step, 1)
 
     def session_run_args(self, run_context):
-        print('hello')
         return [self.step_incrementor]
 
     def run_interval_operations(self, run_context, results, global_step):
-        print('helkdfsjlk')
         logger.info('step {}'.format(global_step))

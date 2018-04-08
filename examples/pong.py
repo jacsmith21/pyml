@@ -6,6 +6,14 @@ import tensortools as tt
 import numpy as np
 
 
+# noinspection PyShadowingNames
+def raw_session(sess):
+    try:
+        return raw_session(sess._sess)
+    except AttributeError:
+        return sess
+
+
 def preprocess(image):
     image = image[35:195]  # crop
     image = image[::2, ::2, 0]  # downsample by factor of 2
@@ -80,15 +88,18 @@ with tf.train.MonitoredTrainingSession(checkpoint_dir=checkpoint_dir, hooks=hook
         probability = probability[0]  # there's only one actual probability
         action = 1 if np.random.uniform() < probability else 0
 
-        state, reward, done, info = env.step(action)
-        observation = env.reset()  # getting ready for the next iteration
+        state, reward, done, info = env.step(action + 2)  # make action i
 
         frames.append(frame)
         actions.append(action)
         rewards.append(reward)
 
+        if reward != 0:  # Pong has either +1 or -1 reward exactly when game ends.
+            print(('ep %d: game finished, reward: %f' % (episode, reward)) + ('' if reward == -1 else ' !!!!!!!!'))
+
         if not done:
             continue
+        observation = env.reset()  # lets reset now to get ready for the next iteration
 
         rewards = discount_rewards(rewards)
         rewards = tt.utils.normalize(rewards)
@@ -96,11 +107,10 @@ with tf.train.MonitoredTrainingSession(checkpoint_dir=checkpoint_dir, hooks=hook
         rewards = []
 
         running_reward = 0.99 * running_reward + 0.01 * (sum(rewards))
-        tf.summary.scalar('running_reward', running_reward)
 
         episode += 1
 
-        if episode % batch != 0:
+        if False and episode % batch != 0:
             continue
 
         # Ok, it's time to actually train!
@@ -113,7 +123,7 @@ with tf.train.MonitoredTrainingSession(checkpoint_dir=checkpoint_dir, hooks=hook
 
         sess.run(optimizer, feed_dict={pixels_ph: frames, actions_ph: actions, rewards_ph: discounted_rewards})
 
-        saver.save(sess, os.path.join(checkpoint_dir, 'model.ckpt'), global_step=step)
+        saver.save(raw_session(sess), os.path.join(checkpoint_dir, 'model.ckpt'), global_step=step)
         print("episode: {}, step: {}, reward: {}".format(episode, step, running_reward))
 
         frames, actions, discounted_rewards = [], [], []

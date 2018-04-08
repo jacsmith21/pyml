@@ -3,7 +3,7 @@ import logging
 import numpy as np
 import skimage.draw
 
-from tensortools.abc import abstract
+from tensortools import abc
 
 
 class Generator:
@@ -26,7 +26,7 @@ class Generator:
         def _random_color():
             return np.random.randint(0, 255, size=3)
 
-        @abstract
+        @abc.abstract
         def _generate(self, r, y, height, width, min_size, max_size, color):
             pass
 

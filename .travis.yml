@@ -1,0 +1,7 @@
+language: python
+python:
+  - "3.5"
+install:
+  - pipenv install
+script:
+  - pytest # or py.test for Python versions 3.5 and below

@@ -12,6 +12,7 @@ numpy = "*"
 scipy = "*"
 requests = "*"
 scikit-image = "*"
+gym = {extras = ["atari"]}
 
 [dev-packages]
 recommonmark = "*"

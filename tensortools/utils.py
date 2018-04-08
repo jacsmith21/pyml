@@ -9,6 +9,12 @@ from tensortools import logging
 logger = logging.get_logger(__name__)
 
 
+def normalize(arr):
+    arr -= np.mean(arr)
+    arr /= np.std(arr)
+    return arr
+
+
 def iou(box_a, box_b):
     c_w, c_h = box_b
     w, h = box_a

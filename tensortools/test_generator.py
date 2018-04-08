@@ -1,11 +1,11 @@
 import unittest
 
-from tensortools.generator import Generator
+from tensortools import generator
 
 
 class TestGenerator(unittest.TestCase):
     def setUp(self):
-        self.generator = Generator()
+        self.generator = generator.Generator()
 
     def test_generates_color_images_with_correct_shape(self):
         images, labels = self.generator.generate(100, 128, 128, max_shapes=1)
@@ -34,10 +34,10 @@ class TestGenerator(unittest.TestCase):
         self.assertTrue((image == 255).all())
 
     def test_rectangle_generate(self):
-        self._test_shape_generate(Generator.RectangleGenerator())
+        self._test_shape_generate(generator.RectangleGenerator())
 
     def test_circle_generate(self):
-        self._test_shape_generate(Generator.CircleGenerator())
+        self._test_shape_generate(generator.CircleGenerator())
 
     def test_triangle_generate(self):
-        self._test_shape_generate(Generator.TriangleGenerator())
+        self._test_shape_generate(generator.TriangleGenerator())

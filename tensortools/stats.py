@@ -6,16 +6,13 @@ from tensortools import utils
 logger = logging.get_logger(__name__)
 
 
-def distance(annotation, centroid):
-    return 1 - utils.iou(annotation, centroid)
-
-
 def k_means(annotations, n_clusters):
     """
+    Runs the KMeans on a set of object detection annotations.
 
-    :param annotations:
-    :param n_clusters:
-    :return:
+    :param annotations: The annotations, shape `[n_annotations, 2]`.
+    :param n_clusters: The amount of clusters to create.
+    :return: The centroids (annotations) that best cluster the given annotations.
     """
     prev_assignments = None
     indices = np.random.choice(range(len(annotations)), n_clusters, replace=False)
@@ -25,7 +22,7 @@ def k_means(annotations, n_clusters):
     while True:
         distances = []
         for annotation in annotations:
-            distances.append([distance(annotation, centroid) for centroid in centroids])
+            distances.append([1 - utils.iou(annotation, centroid) for centroid in centroids])
 
         # assign samples to centroids
         # distances have a shape of (n_annotations, k)

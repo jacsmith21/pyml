@@ -11,6 +11,8 @@
 .idea/**/dynamic.xml
 .idea/**/uiDesigner.xml
 
+*.pyc
+
 __pycache__/
 venv/
 dist/

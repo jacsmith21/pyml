@@ -23,7 +23,7 @@ def generate_anchors(annotations, fm_sizes, n_clusters):
     """
     annotations = np.array(annotations)
     if annotations.min() < 0 or annotations.max() > 1:
-        raise ValueError('\'annotations\' should be between 0 and 1')
+        logger.warn('\'annotations\' are not between 0 and 1. This may or not be a problem.')
 
     fm_sizes = np.array(fm_sizes)
     cell_sizes = 1 / fm_sizes
@@ -35,14 +35,15 @@ def generate_anchors(annotations, fm_sizes, n_clusters):
             annotation_ious.append(iou)
 
     closest = np.argmax(ious, axis=1)
+    anchors = []
     for i, fm in enumerate(fm_sizes):
         count = utils.count(closest, i)
         logger.info('{} has {} that are the closets'.format(fm, count))
-        if count == 0:
-            raise Exception('feature map {} has no matching annotations'.format(fm))
+        if count <= n_clusters:
+            logger.warn('Feature map {} only has {} matching annotations. No anchors created.'.format(fm, count))
+            anchors.append([cell_sizes[i] for _ in range(n_clusters)])
+            continue
 
-    anchors = []
-    for i, fm in enumerate(fm_sizes):
         fm_annotations = annotations[closest == i]
         logger.info('Average default box size, IOU for feature map {}: {}, {}'.format(
             fm, np.mean(fm_annotations, axis=0), utils.avg_iou(fm_annotations, [1 / fm])))

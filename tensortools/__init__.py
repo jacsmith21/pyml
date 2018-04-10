@@ -7,4 +7,3 @@ from tensortools import generator
 
 hooks = abc.LazyLoader('hooks', globals(), 'tensortools.hooks')
 ops = abc.LazyLoader('ops', globals(), 'tensortools.ops')
-del LazyLoader

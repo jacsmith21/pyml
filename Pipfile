@@ -13,6 +13,7 @@ scipy = "*"
 requests = "*"
 scikit-image = "*"
 gym = {extras = ["atari"]}
+pytest = "*"
 
 [dev-packages]
 recommonmark = "*"

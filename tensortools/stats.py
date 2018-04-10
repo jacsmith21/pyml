@@ -31,7 +31,7 @@ def k_means(annotations, n_clusters):
 
         logger.info("iter {}: mean = {}".format(count, np.mean(np.min(distances, axis=-1))))
 
-        if (new_assignments == prev_assignments).all():
+        if prev_assignments is not None and (new_assignments == prev_assignments).all():
             logger.info('Centroids have not changed since the last iteration. Finished searching!')
             logger.info("Centroids = {}".format(centroids))
             return centroids

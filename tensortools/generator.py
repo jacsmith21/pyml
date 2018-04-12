@@ -1,9 +1,10 @@
-import logging
-
 import numpy as np
 import skimage.draw
 
 from tensortools import abc
+from tensortools import logging
+
+logger = logging.get_logger(__name__)
 
 
 class ShapeGenerator:
@@ -142,7 +143,7 @@ class Generator:
             mask, label = shape_generator.generate(height, width, min_size, max_size)
 
             if not allow_overlap and (image[mask.nonzero()] < 255).any():
-                logging.info('Overlap detected. Skipping shape.')
+                logger.info('Overlap detected. Skipping shape.')
                 continue
 
             image += mask

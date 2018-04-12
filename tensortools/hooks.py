@@ -52,6 +52,3 @@ class GlobalStepIncrementor(IntervalHook):
 
     def session_run_args(self, run_context):
         return [self.step_incrementor]
-
-    def run_interval_operations(self, run_context, results, global_step):
-        logger.info('step {}'.format(global_step))

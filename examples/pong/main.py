@@ -102,7 +102,7 @@ with tf.train.MonitoredTrainingSession(checkpoint_dir=checkpoint_dir, hooks=hook
         observation = env.reset()  # lets reset now to get ready for the next iteration
 
         rewards = discount_rewards(rewards)
-        rewards = tt.utils.normalize(rewards)
+        rewards = tt.utils.standardize(rewards)
         discounted_rewards.extend(rewards.tolist())
         rewards = []
 

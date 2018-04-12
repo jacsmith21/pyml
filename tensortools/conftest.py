@@ -1,4 +1,5 @@
 import json
+import tensorflow as tf
 import os
 import pytest
 
@@ -20,3 +21,9 @@ def random_annotations():
         annotations = json.load(f)
 
     return annotations
+
+
+@pytest.fixture
+def sess():
+    with tf.Session() as session:
+        yield session

@@ -9,13 +9,35 @@ from tensortools import logging
 logger = logging.get_logger(__name__)
 
 
-def normalize(arr):
+def standardize(arr):
+    """
+    Normalizes an array by subtracting the mean and dividing by the standard deviation. See
+    https://en.wikipedia.org/wiki/Feature_scaling.
+
+    >>> standardize([1, 2, 3])
+    array([-1.22474487,  0.        ,  1.22474487])
+
+    :param arr: The array to normalize.
+    :return: The normalized array.
+    """
     arr -= np.mean(arr)
     arr /= np.std(arr)
     return arr
 
 
 def iou(box_a, box_b):
+    """
+    Calculates the IOU between two boxes.
+
+    For example:
+
+    >>> iou([0.5, 0.5], [1, 1])
+    0.25
+
+    :param box_a:
+    :param box_b:
+    :return:
+    """
     c_w, c_h = box_b
     w, h = box_a
 
@@ -31,26 +53,37 @@ def iou(box_a, box_b):
     return intersection / union
 
 
-def avg_iou(annotations, centroids):
+def avg_iou(annotations, anchors):
     """
+    Calculates the average iou between the given anchors. Only the max IOU between each annotation and anchor is used
+    to calculate the average.
 
-    :param annotations:
-    :param centroids:
-    :return:
+
+    :param annotations: The annotations, shape [n_annotations, 2].
+    :param anchors: The anchors, shape [n_anchors, 2].
+    :return: The average IOU.
     """
     annotations = np.array(annotations)
 
     total = 0
     for annotation in annotations:
-        # note IOU() will return array which contains IoU for each centroid and X[i] // slightly ineffective,
-        # but I am too lazy
-        total += max([iou(annotation, centroid) for centroid in centroids])
+        # we calculate the iou for each annotation with each anchor
+        # however we only keep the largest iou as each annotation only
+        # belongs to one anchor
+        total += max([iou(annotation, anchor) for anchor in anchors])
 
     n_annotations, _ = annotations.shape
     return total / n_annotations
 
 
 def count(arr, value):
+    """
+    Counts the occurrences of the value in the given iterable.
+
+    :param arr: The iterable.
+    :param value: The value to count.
+    :return: The number of occurrences.
+    """
     total = 0
     for element in arr:
         try:
@@ -66,9 +99,10 @@ def count(arr, value):
 
 def download_file(url, dst):
     """
+    Downloads a file from a url to the given destination with % finished bar.
 
-    :param url:
-    :param dst:
+    :param url: The url.
+    :param dst: The destination.
     """
     if os.path.isfile(dst):
         return

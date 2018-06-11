@@ -1,0 +1,41 @@
+site_name: "TensorTools"
+
+# This tells pydocmd which pages to generate from which Python modules,
+# functions and classes. At the first level is the page name, below that
+# is a tree of Python member names (modules, classes, etc.) that should be
+# documented. Higher indentation leads to smaller header size.
+generate:
+- api/image.md:
+  - tensortools.image++
+- api/utils.md:
+  - tensortools.utils++
+- api/ssd.md:
+  - tensortools.ssd++
+- api/yolo.md:
+  - tensortools.yolo++
+- api/abc.md:
+  - tensortools.abc++
+- api/generator.md:
+  - tensortools.generator++
+- api/hooks.md:
+  - tensortools.hooks++
+- api/ops.md:
+  - tensortools.ops++
+
+# MkDocs pages configuration. The `<<` operator is sugar added by pydocmd
+# that allows you to use an external Markdown file (eg. your project's README)
+# in the documentation. The path must be relative to current working directory.
+pages:
+- Home: index.md << README.md
+- API:
+  - Image: api/image.md
+  - Utils: api/utils.md
+  - SSD: api/ssd.md
+  - YOLO: api/yolo.md
+  - ABC: api/abc.md
+  - Generator: api/generator.md
+  - Hooks: api/hooks.md
+  - Ops: api/ops.md
+
+preprocessor: pydocmd.restructuredtext.Preprocessor
+theme: material

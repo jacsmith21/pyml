@@ -8,7 +8,15 @@ logger = logging.get_logger(__name__)
 
 
 class IntervalHook(tf.train.SessionRunHook):
+    """
+    A hook which runs every # of iterations. Useful for subclassing.
+    """
     def __init__(self, interval):
+        """
+        Construct the interval.
+
+        :param interval: The interval.
+        """
         self.global_step = None
         self.interval = interval
 
@@ -25,6 +33,12 @@ class IntervalHook(tf.train.SessionRunHook):
 
     # noinspection PyMethodMayBeStatic, PyUnusedLocal
     def session_run_args(self, run_context):  # pylint: disable=unused-argument
+        """
+        Create the session run arguments.
+
+        :param run_context: The run context.
+        :return: The list of arguments to run.
+        """
         return list()
 
     def after_run(self, run_context, run_values):
@@ -38,17 +52,25 @@ class IntervalHook(tf.train.SessionRunHook):
 
     @abc.abstract
     def run_interval_operations(self, run_context, results, global_step):
+        """
+        The method to override.
+
+        :param run_context: The run context.
+        :param results: The results of running the given arguments.
+        :param global_step: The evaluated global step tensor.
+        """
         pass
 
 
-class GlobalStepIncrementor(IntervalHook):
-    def __init__(self, log_interval=None):
-        super().__init__(log_interval)
+class GlobalStepIncrementor(tf.train.SessionRunHook):
+    """
+    Increments the global step after each `Session` `run` call. Useful for models which do not use optimizers.
+    """
+    def __init__(self):
         self.step_incrementor = None
 
     def begin(self):
-        super().begin()
         self.step_incrementor = tf.assign_add(self.global_step, 1)
 
-    def session_run_args(self, run_context):
-        return [self.step_incrementor]
+    def before_run(self, run_context):
+        return tf.train.SessionRunArgs([self.step_incrementor])

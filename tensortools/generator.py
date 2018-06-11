@@ -38,6 +38,9 @@ class ShapeGenerator:
 
 
 class RectangleGenerator(ShapeGenerator):
+    """
+    Generates rectangles.
+    """
     def _generate(self, r, c, height, width, min_size, max_size, color):
         available_height = height - r
         if available_height < min_size:
@@ -56,6 +59,9 @@ class RectangleGenerator(ShapeGenerator):
 
 
 class CircleGenerator(ShapeGenerator):
+    """
+    Generates circles.
+    """
     def _generate(self, r, c, height, width, min_size, max_size, color):
         available_radius = min(r, c, height - r, width - c)
         if available_radius < min_size:
@@ -71,6 +77,9 @@ class CircleGenerator(ShapeGenerator):
 
 
 class TriangleGenerator(ShapeGenerator):
+    """
+    Generates triangles.
+    """
     def _generate(self, r, c, height, width, min_size, max_size, color):
         # (r, c) is the bottom left corner.
         # We're making an equilateral triangle.

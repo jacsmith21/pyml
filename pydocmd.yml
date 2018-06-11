@@ -39,3 +39,4 @@ pages:
 
 preprocessor: pydocmd.restructuredtext.Preprocessor
 theme: material
+site_dir: docs

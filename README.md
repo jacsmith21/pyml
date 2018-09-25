@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/jacsmith21/tensortools.png?branch=master)](https://travis-ci.org/jacsmith21/tensortools)
+[![Build Status](https://travis-ci.org/jsmith21/tensortools.png?branch=master)](https://travis-ci.org/jacsmith21/tensortools)
 [![Docs](https://readthedocs.org/projects/tensortools/badge/?version=latest)](https://tensortools.readthedocs.io/)
 
 # TensorTools
